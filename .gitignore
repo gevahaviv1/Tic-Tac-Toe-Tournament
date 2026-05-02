@@ -3,3 +3,12 @@ ex1.iml
 
 # Ignore idea file
 .idea
+
+# Ignore windsurf rules
+.windsurfrules 
+
+# Ignore OOP coding style config
+.editorconfig
+
+# Ignore OOP coding style
+OOPCodingStyle.xml
