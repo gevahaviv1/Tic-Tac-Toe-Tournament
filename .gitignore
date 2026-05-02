@@ -12,3 +12,5 @@ ex1.iml
 
 # Ignore OOP coding style
 OOPCodingStyle.xml
+.DS_Store
+ex1.zip
