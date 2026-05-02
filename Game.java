@@ -79,6 +79,46 @@ public class Game {
 	 * @return the <code>Mark</code> of the winner, or <code>Mark.BLANK</code> if the game is a draw.
 	 */
 	public Mark run() {
+		Board board = new Board(size);
+		Mark[] turnOrder = {Mark.X, Mark.O};
+		Player[] players = {playerX, playerO};
+		int totalCells = size * size;
+		for (int turn = 0; turn < totalCells; turn++) {
+			Mark currentMark = turnOrder[turn % 2];
+			Player currentPlayer = players[turn % 2];
+			currentPlayer.playTurn(board, currentMark);
+			renderer.renderBoard(board);
+			if (checkWin(board, currentMark))
+				return currentMark;
+		}
 		return Mark.BLANK;
+	}
+
+	/* Returns true if the given mark has a winning streak on the board. */
+	private boolean checkWin(Board board, Mark mark) {
+		for (int row = 0; row < size; row++) {
+			for (int col = 0; col < size; col++) {
+				if (checkStreak(board, mark, row, col))
+					return true;
+			}
+		}
+		return false;
+	}
+
+	/* Returns true if mark starts a winning streak from (row, col) in any direction. */
+	private boolean checkStreak(Board board, Mark mark, int row, int col) {
+		return checkDirection(board, mark, row, col, 1, 0)
+				|| checkDirection(board, mark, row, col, 0, 1)
+				|| checkDirection(board, mark, row, col, 1, 1)
+				|| checkDirection(board, mark, row, col, 1, -1);
+	}
+
+	/* Returns true if mark has winStreak consecutive marks starting at (row,col) in direction (dr,dc). */
+	private boolean checkDirection(Board board, Mark mark, int row, int col, int dr, int dc) {
+		for (int step = 0; step < winStreak; step++) {
+			if (board.getMark(row + step * dr, col + step * dc) != mark)
+				return false;
+		}
+		return true;
 	}
 }
