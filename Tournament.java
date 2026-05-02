@@ -76,13 +76,6 @@ public class Tournament {
 		System.out.println(String.format(TIES_FORMAT, ties));
 	}
 
-	/* Creates and returns a Renderer instance matching the given type name and board size. */
-	private static Renderer buildRenderer(String name, int size) {
-		if (name.equals("console"))
-			return new ConsoleRenderer(size);
-		return new VoidRenderer();
-	}
-
 	/**
 	 * Entry point of the program. Expects arguments: rounds, size, winStreak,
 	 * rendererType, playerType1, playerType2.
@@ -96,7 +89,8 @@ public class Tournament {
 		String rendererType = args[3];
 		String playerName1 = args[4];
 		String playerName2 = args[5];
-		Renderer renderer = buildRenderer(rendererType, size);
+		RendererFactory rendererFactory = new RendererFactory();
+		Renderer renderer = rendererFactory.buildRenderer(rendererType, size);
 		PlayerFactory playerFactory = new PlayerFactory();
 		Player player1 = playerFactory.buildPlayer(playerName1);
 		Player player2 = playerFactory.buildPlayer(playerName2);
