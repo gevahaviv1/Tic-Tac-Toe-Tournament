@@ -46,6 +46,20 @@ public class Board {
 	}
 
 	/**
+	 * Returns the mark at the given position on the board.
+	 *
+	 * @param row the zero-based row index.
+	 * @param col the zero-based column index.
+	 * @return the <code>Mark</code> at the given position, or <code>Mark.BLANK</code>
+	 * if the coordinates are out of bounds.
+	 */
+	public Mark getMark(int row, int col) {
+		if (row >= size || row < 0 || col >= size || col < 0)
+			return Mark.BLANK;
+		return board[row][col];
+	}
+
+	/**
 	 * Places a mark on the board at the given row and column.
 	 *
 	 * @param mark the <code>Mark</code> to place.
