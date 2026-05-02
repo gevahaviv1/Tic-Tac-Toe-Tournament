@@ -76,29 +76,6 @@ public class Tournament {
 		System.out.println(String.format(TIES_FORMAT, ties));
 	}
 
-	/* Creates and returns a Player instance matching the given type name. */
-	private static Player buildPlayer(String name) {
-		switch (name) {
-		case "human":
-			return new HumanPlayer();
-		case "whatever":
-			return new WhateverPlayer();
-		case "naive":
-			return new NaivePlayer();
-		case "smart":
-			return new SmartPlayer();
-		default:
-			return new WhateverPlayer();
-		}
-	}
-
-	/* Creates and returns a Renderer instance matching the given type name and board size. */
-	private static Renderer buildRenderer(String name, int size) {
-		if (name.equals("console"))
-			return new ConsoleRenderer(size);
-		return new VoidRenderer();
-	}
-
 	/**
 	 * Entry point of the program. Expects arguments: rounds, size, winStreak,
 	 * rendererType, playerType1, playerType2.
@@ -112,9 +89,11 @@ public class Tournament {
 		String rendererType = args[3];
 		String playerName1 = args[4];
 		String playerName2 = args[5];
-		Renderer renderer = buildRenderer(rendererType, size);
-		Player player1 = buildPlayer(playerName1);
-		Player player2 = buildPlayer(playerName2);
+		RendererFactory rendererFactory = new RendererFactory();
+		Renderer renderer = rendererFactory.buildRenderer(rendererType, size);
+		PlayerFactory playerFactory = new PlayerFactory();
+		Player player1 = playerFactory.buildPlayer(playerName1);
+		Player player2 = playerFactory.buildPlayer(playerName2);
 		Tournament tournament = new Tournament(rounds, renderer, player1, player2);
 		tournament.playTournament(size, winStreak, playerName1, playerName2);
 	}
