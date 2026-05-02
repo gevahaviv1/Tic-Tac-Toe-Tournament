@@ -17,7 +17,7 @@ public class Board {
 	/**
 	 * Constructs a board with the default size.
 	 */
-	Board() {
+	public Board() {
 		this(DEFAULT_SIZE);
 	}
 
@@ -26,7 +26,7 @@ public class Board {
 	 *
 	 * @param size the number of rows and columns on the board.
 	 */
-	Board(int size) {
+	public Board(int size) {
 		this.size = size;
 		this.board = new Mark[size][size];
 		for (int row = 0; row < size; row++) {
