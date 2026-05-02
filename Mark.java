@@ -4,7 +4,14 @@
  * @author Geva Haviv
  */
 public enum Mark {
-	BLANK, X, O;
+	/** Represents an empty cell. */
+	BLANK,
+
+	/** Represents the X player's mark. */
+	X,
+
+	/** Represents the O player's mark. */
+	O;
 
 	/* String representation of the X mark. */
 	private static final String X_SYMBOL = "X";
