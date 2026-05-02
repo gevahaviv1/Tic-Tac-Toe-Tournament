@@ -1,0 +1,37 @@
+CSE
+ID
+
+=============================
+Automatic Players - Strategies
+=============================
+
+WhateverPlayer:
+  Randomly selects an empty cell on the board each turn.
+
+NaivePlayer:
+  Scans the board row by row, left to right, and places its mark on the
+  first empty cell found.
+
+SmartPlayer:
+  Uses the minimax algorithm with a depth limit to evaluate future game
+  states and select the move that maximizes its chance of winning.
+
+=============================
+Design Decisions
+=============================
+
+Each player class (WhateverPlayer, NaivePlayer, SmartPlayer, HumanPlayer)
+implements the Player interface, which exposes a single method: playTurn.
+This design follows the Open/Closed Principle from OOP - the Tournament
+and Game classes depend only on the Player interface, so new player types
+can be added without modifying any existing code.
+
+Similarly, Renderer is an interface implemented by ConsoleRenderer and
+VoidRenderer, decoupling the rendering logic from the game logic.
+
+The PlayerFactory and RendererFactory classes centralize instantiation,
+keeping the Tournament.main method clean and extensible.
+
+=============================
+No additional classes were added.
+=============================
