@@ -66,12 +66,13 @@ public class Board {
 	 * @param row  the zero-based row index.
 	 * @param col  the zero-based column index.
 	 * @return <code>true</code> if the mark was placed successfully,
-	 * <code>false</code> if the coordinates are out of bounds or the spot is already occupied.
+	 * <code>false</code> if the coordinates are out of bounds or the spot is already occupied
+	 * (occupancy check is skipped when placing <code>Mark.BLANK</code>).
 	 */
 	public boolean putMark(Mark mark, int row, int col) {
 		if (row >= size || row < 0 || col >= size || col < 0)
 			return false;
-		if (board[row][col] != Mark.BLANK)
+		if (mark != Mark.BLANK && board[row][col] != Mark.BLANK)
 			return false;
 		board[row][col] = mark;
 		return true;
