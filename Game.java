@@ -88,8 +88,9 @@ public class Game {
 			Player currentPlayer = players[turn % 2];
 			currentPlayer.playTurn(board, currentMark);
 			renderer.renderBoard(board);
-			if (checkWin(board, currentMark))
+			if (checkWin(board, currentMark)) {
 				return currentMark;
+			}
 		}
 		return Mark.BLANK;
 	}
@@ -98,8 +99,9 @@ public class Game {
 	private boolean checkWin(Board board, Mark mark) {
 		for (int row = 0; row < size; row++) {
 			for (int col = 0; col < size; col++) {
-				if (checkStreak(board, mark, row, col))
+				if (checkStreak(board, mark, row, col)) {
 					return true;
+				}
 			}
 		}
 		return false;
@@ -116,8 +118,9 @@ public class Game {
 	/* Returns true if mark has winStreak consecutive marks starting at (row,col) in direction (dr,dc). */
 	private boolean checkDirection(Board board, Mark mark, int row, int col, int dr, int dc) {
 		for (int step = 0; step < winStreak; step++) {
-			if (board.getMark(row + step * dr, col + step * dc) != mark)
+			if (board.getMark(row + step * dr, col + step * dc) != mark) {
 				return false;
+			}
 		}
 		return true;
 	}

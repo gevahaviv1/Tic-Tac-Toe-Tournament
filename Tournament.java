@@ -56,10 +56,11 @@ public class Tournament {
 		int ties = 0;
 		for (int round = 0; round < rounds; round++) {
 			Game game;
-			if (round % 2 == 0)
+			if (round % 2 == 0) {
 				game = new Game(player1, player2, size, winStreak, renderer);
-			else
+			} else {
 				game = new Game(player2, player1, size, winStreak, renderer);
+			}
 			Mark result = game.run();
 			if (result == Mark.BLANK) {
 				ties++;

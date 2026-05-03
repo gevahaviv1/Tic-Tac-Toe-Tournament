@@ -37,45 +37,58 @@ public class SmartPlayer implements Player {
 		int bestScore = Integer.MIN_VALUE;
 		int bestRow = 0;
 		int bestCol = 0;
+		int alpha = Integer.MIN_VALUE;
+		int beta = Integer.MAX_VALUE;
 		for (int row = 0; row < size; row++) {
 			for (int col = 0; col < size; col++) {
 				if (board.putMark(mark, row, col)) {
-					int score = minimax(board, mark, getOpponent(mark), MAX_DEPTH, false);
+					int score = minimax(board, mark, getOpponent(mark),
+							MAX_DEPTH, false, alpha, beta);
 					board.putMark(Mark.BLANK, row, col);
 					if (score > bestScore) {
 						bestScore = score;
 						bestRow = row;
 						bestCol = col;
 					}
+					alpha = Math.max(alpha, bestScore);
 				}
 			}
 		}
 		board.putMark(mark, bestRow, bestCol);
 	}
 
-	/* Recursively evaluates board for player self against current mover using minimax.
+	/* Recursively evaluates board using minimax with alpha-beta pruning.
 	   Returns the best score reachable from this state within the given depth. */
 	private int minimax(Board board, Mark self, Mark current,
-						int depth, boolean isMaximizing) {
+						int depth, boolean isMaximizing, int alpha, int beta) {
 		int size = board.getSize();
-		if (checkWin(board, self, size))
+		if (checkWin(board, self, size)) {
 			return WIN_SCORE + depth;
-		if (checkWin(board, getOpponent(self), size))
+		}
+		if (checkWin(board, getOpponent(self), size)) {
 			return LOSE_SCORE - depth;
-		if (depth == 0 || isBoardFull(board, size))
+		}
+		if (depth == 0 || isBoardFull(board, size)) {
 			return DRAW_SCORE;
+		}
 
 		int bestScore = isMaximizing ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 		for (int row = 0; row < size; row++) {
 			for (int col = 0; col < size; col++) {
 				if (board.putMark(current, row, col)) {
 					int score = minimax(board, self, getOpponent(current),
-							depth - 1, !isMaximizing);
+							depth - 1, !isMaximizing, alpha, beta);
 					board.putMark(Mark.BLANK, row, col);
-					if (isMaximizing)
+					if (isMaximizing) {
 						bestScore = Math.max(bestScore, score);
-					else
+						alpha = Math.max(alpha, bestScore);
+					} else {
 						bestScore = Math.min(bestScore, score);
+						beta = Math.min(beta, bestScore);
+					}
+					if (beta <= alpha) {
+						return bestScore;
+					}
 				}
 			}
 		}
@@ -90,47 +103,29 @@ public class SmartPlayer implements Player {
 		return Mark.X;
 	}
 
-	/* Returns true if mark has a complete row, column, or diagonal on board of the given size. */
+	/* Returns true if mark has a winning streak on the board. */
 	private boolean checkWin(Board board, Mark mark, int size) {
-		for (int i = 0; i < size; i++) {
-			if (checkRow(board, mark, i, size) || checkCol(board, mark, i, size))
-				return true;
-		}
-		return checkDiagonal(board, mark, size) || checkAntiDiagonal(board, mark, size);
-	}
-
-	/* Returns true if mark fills every cell in the specified row on the given board. */
-	private boolean checkRow(Board board, Mark mark, int row, int size) {
-		for (int col = 0; col < size; col++) {
-			if (board.getMark(row, col) != mark)
-				return false;
-		}
-		return true;
-	}
-
-	/* Returns true if mark fills every cell in the specified column on the given board. */
-	private boolean checkCol(Board board, Mark mark, int col, int size) {
+		int winStreak = size - 1;
 		for (int row = 0; row < size; row++) {
-			if (board.getMark(row, col) != mark)
-				return false;
+			for (int col = 0; col < size; col++) {
+				if (checkDirection(board, mark, row, col, 1, 0, winStreak)
+						|| checkDirection(board, mark, row, col, 0, 1, winStreak)
+						|| checkDirection(board, mark, row, col, 1, 1, winStreak)
+						|| checkDirection(board, mark, row, col, 1, -1, winStreak)) {
+					return true;
+				}
+			}
 		}
-		return true;
+		return false;
 	}
 
-	/* Returns true if mark fills the main diagonal of a board with the given size. */
-	private boolean checkDiagonal(Board board, Mark mark, int size) {
-		for (int i = 0; i < size; i++) {
-			if (board.getMark(i, i) != mark)
+	/* Returns true if mark has streak consecutive marks starting at (row,col) in direction (dr,dc). */
+	private boolean checkDirection(Board board, Mark mark, int row, int col,
+								   int dr, int dc, int streak) {
+		for (int step = 0; step < streak; step++) {
+			if (board.getMark(row + step * dr, col + step * dc) != mark) {
 				return false;
-		}
-		return true;
-	}
-
-	/* Returns true if mark fills the anti-diagonal of a board with the given size. */
-	private boolean checkAntiDiagonal(Board board, Mark mark, int size) {
-		for (int i = 0; i < size; i++) {
-			if (board.getMark(i, size - 1 - i) != mark)
-				return false;
+			}
 		}
 		return true;
 	}
@@ -139,8 +134,9 @@ public class SmartPlayer implements Player {
 	private boolean isBoardFull(Board board, int size) {
 		for (int row = 0; row < size; row++) {
 			for (int col = 0; col < size; col++) {
-				if (board.getMark(row, col) == Mark.BLANK)
+				if (board.getMark(row, col) == Mark.BLANK) {
 					return false;
+				}
 			}
 		}
 		return true;
