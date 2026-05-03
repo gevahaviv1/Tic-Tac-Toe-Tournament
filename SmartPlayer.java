@@ -37,26 +37,30 @@ public class SmartPlayer implements Player {
 		int bestScore = Integer.MIN_VALUE;
 		int bestRow = 0;
 		int bestCol = 0;
+		int alpha = Integer.MIN_VALUE;
+		int beta = Integer.MAX_VALUE;
 		for (int row = 0; row < size; row++) {
 			for (int col = 0; col < size; col++) {
 				if (board.putMark(mark, row, col)) {
-					int score = minimax(board, mark, getOpponent(mark), MAX_DEPTH, false);
+					int score = minimax(board, mark, getOpponent(mark),
+							MAX_DEPTH, false, alpha, beta);
 					board.putMark(Mark.BLANK, row, col);
 					if (score > bestScore) {
 						bestScore = score;
 						bestRow = row;
 						bestCol = col;
 					}
+					alpha = Math.max(alpha, bestScore);
 				}
 			}
 		}
 		board.putMark(mark, bestRow, bestCol);
 	}
 
-	/* Recursively evaluates board for player self against current mover using minimax.
+	/* Recursively evaluates board using minimax with alpha-beta pruning.
 	   Returns the best score reachable from this state within the given depth. */
 	private int minimax(Board board, Mark self, Mark current,
-						int depth, boolean isMaximizing) {
+						int depth, boolean isMaximizing, int alpha, int beta) {
 		int size = board.getSize();
 		if (checkWin(board, self, size)) {
 			return WIN_SCORE + depth;
@@ -73,12 +77,17 @@ public class SmartPlayer implements Player {
 			for (int col = 0; col < size; col++) {
 				if (board.putMark(current, row, col)) {
 					int score = minimax(board, self, getOpponent(current),
-							depth - 1, !isMaximizing);
+							depth - 1, !isMaximizing, alpha, beta);
 					board.putMark(Mark.BLANK, row, col);
 					if (isMaximizing) {
 						bestScore = Math.max(bestScore, score);
+						alpha = Math.max(alpha, bestScore);
 					} else {
 						bestScore = Math.min(bestScore, score);
+						beta = Math.min(beta, bestScore);
+					}
+					if (beta <= alpha) {
+						return bestScore;
 					}
 				}
 			}
