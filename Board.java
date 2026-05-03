@@ -54,8 +54,9 @@ public class Board {
 	 * if the coordinates are out of bounds.
 	 */
 	public Mark getMark(int row, int col) {
-		if (row >= size || row < 0 || col >= size || col < 0)
+		if (row >= size || row < 0 || col >= size || col < 0) {
 			return Mark.BLANK;
+		}
 		return board[row][col];
 	}
 
@@ -70,10 +71,12 @@ public class Board {
 	 * (occupancy check is skipped when placing <code>Mark.BLANK</code>).
 	 */
 	public boolean putMark(Mark mark, int row, int col) {
-		if (row >= size || row < 0 || col >= size || col < 0)
+		if (row >= size || row < 0 || col >= size || col < 0) {
 			return false;
-		if (mark != Mark.BLANK && board[row][col] != Mark.BLANK)
+		}
+		if (mark != Mark.BLANK && board[row][col] != Mark.BLANK) {
 			return false;
+		}
 		board[row][col] = mark;
 		return true;
 	}
